@@ -34,7 +34,12 @@ jobs:
           distribution: 'temurin'
           cache: maven # Caches ~/.m2 directory to drastically speed up future builds
 
-      # 3. Build and Push directly using Google Jib (No Docker daemon needed)
+      # 3. Ensure Maven wrapper script is executable
+      - name: Make mvnw executable
+        working-directory: ./config-service
+        run: chmod +x ./mvnw
+
+      # 4. Build and Push directly using Google Jib (No Docker daemon needed)
       - name: Build and Push Docker Image with Jib
         working-directory: ./config-service
         run: |
@@ -44,21 +49,21 @@ jobs:
             -Djib.to.auth.username=${{ secrets.DOCKERHUB_USERNAME }} \
             -Djib.to.auth.password=${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 4. Secure, keyless authentication to Google Cloud
+      # 5. Secure, keyless authentication to Google Cloud
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
 
-      # 5. Connect to the GKE Cluster
+      # 6. Connect to the GKE Cluster
       - name: Get GKE Credentials
         uses: google-github-actions/get-gke-credentials@v2
         with:
           cluster_name: ${{ secrets.GCP_CLUSTER }}
           location: ${{ secrets.GCP_ZONE }}
 
-      # 6. Trigger the Zero-Downtime Rolling Update in Kubernetes
+      # 7. Trigger the Zero-Downtime Rolling Update in Kubernetes
       - name: Deploy to GKE
         run: |
           kubectl set image deployment/config-service config-service=${{ env.IMAGE_NAME }}:${{ github.sha }} -n lovable-core
