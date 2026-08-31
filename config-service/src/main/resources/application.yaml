@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: config-service
+
+  cloud:
+    config.server.git:
+      uri: https://github.com/shoaibdev26/lovable-config-server
+      username: shoaibdev26
+      password: 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
+      default-label: main
+
+server.port: 8888
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  health:
+    config:
+      enabled: false
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: k8s
+
+  cloud:
+    discovery:
+      enabled: false
+    config.server.git:
+      uri: https://github.com/shoaibdev26/lovable-config-server
+      username: ${GIT_USERNAME}
+      password: ${GIT_PASSWORD}
+
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
