@@ -20,7 +20,6 @@ management:
     config:
       enabled: false
 ---
-
 spring:
   config:
     activate:
