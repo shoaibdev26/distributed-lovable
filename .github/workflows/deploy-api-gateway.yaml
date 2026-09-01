@@ -1,15 +1,15 @@
-name: Deploy Config Service
+name: Deploy API Gateway Service
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'config-service/**'
+      - 'api-gateway/**'
 
 env:
-  SERVICE_NAME: config-service
-  IMAGE_NAME: 9090392497/lovable-config-service
+  SERVICE_NAME: api-gateway
+  IMAGE_NAME: 9090392497/lovable-api-gateway
 
 permissions:
   id-token: write
@@ -32,7 +32,7 @@ jobs:
           cache: maven
 
       - name: Make mvnw executable
-        working-directory: ./config-service
+        working-directory: ./api-gateway
         run: chmod +x ./mvnw
 
       - name: Build and Push Docker Image with Jib

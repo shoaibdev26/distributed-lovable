@@ -1,15 +1,15 @@
-name: Deploy Config Service
+name: Deploy Account Service
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'config-service/**'
+      - 'account-service/**'
 
 env:
-  SERVICE_NAME: config-service
-  IMAGE_NAME: 9090392497/lovable-config-service
+  SERVICE_NAME: account-service
+  IMAGE_NAME: 9090392497/lovable-account-service
 
 permissions:
   id-token: write
@@ -32,8 +32,12 @@ jobs:
           cache: maven
 
       - name: Make mvnw executable
-        working-directory: ./config-service
+        working-directory: ./account-service
         run: chmod +x ./mvnw
+
+      - name: Build and Install Common Lib
+        working-directory: ./common-lib
+        run: ./mvnw clean install -DskipTests
 
       - name: Build and Push Docker Image with Jib
         working-directory: ./${{ env.SERVICE_NAME }}
